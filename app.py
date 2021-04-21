@@ -1,11 +1,7 @@
-from routes.RoomListResource import RoomListResource
-from routes.RoomResource import RoomResource
-from routes.UserResource import UserResource
-from routes.LoginResource import LoginResource
 from services.config import ma, secret_key
 from flask import Flask
 from services.database import db
-from services.exception_handlers import api
+from services.config import api
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 
@@ -25,12 +21,6 @@ api.init_app(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
 app.config['SECRET_KEY'] = secret_key
-
-# routes
-api.add_resource(RoomListResource, '/rooms')
-api.add_resource(RoomResource, '/room/<int:room_id>')
-api.add_resource(UserResource, '/user')
-api.add_resource(LoginResource, '/login')
 
 if __name__ == '__main__':
     app.run()
