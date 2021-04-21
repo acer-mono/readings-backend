@@ -3,7 +3,6 @@ from flask_jwt_extended import create_access_token
 from models.User import User
 from flask_restx import Resource
 import datetime
-from services.config import api
 
 
 class LoginResource(Resource):
@@ -17,6 +16,3 @@ class LoginResource(Resource):
         expires = datetime.timedelta(days=7)
         access_token = create_access_token(identity=str(user.id), expires_delta=expires)
         return {'token': access_token}, 200
-
-
-api.add_resource(LoginResource, '/login')

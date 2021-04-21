@@ -3,8 +3,10 @@ from flask_bcrypt import generate_password_hash, check_password_hash
 
 
 class User(db.Model):
+    __tablename__ = 'user'
+
     id = db.Column(db.Integer, primary_key=True)
-    login = db.Column(db.String(100), unique=True)
+    login = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
     isAdmin = db.Column(db.Boolean, default=False)
 

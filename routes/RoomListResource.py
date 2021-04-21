@@ -3,7 +3,6 @@ from models.Room import Room, db
 from flask_restx import Resource
 from schemas.RoomSchema import rooms_schema, room_schema
 from flask_jwt_extended import jwt_required
-from services.config import api
 
 
 class RoomListResource(Resource):
@@ -20,6 +19,3 @@ class RoomListResource(Resource):
         db.session.add(new_room)
         db.session.commit()
         return room_schema.dump(new_room)
-
-
-api.add_resource(RoomListResource, '/rooms')

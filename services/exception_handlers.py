@@ -1,5 +1,7 @@
-from services.config import api
 from flask_jwt_extended import exceptions
+from flask_restx import Api
+
+api = Api()
 
 
 @api.errorhandler(exceptions.NoAuthorizationError)
