@@ -1,5 +1,5 @@
 from models.Room import Room
-from flask_restful import Resource
+from flask_restx import Resource
 from schemas.RoomSchema import room_schema
 
 

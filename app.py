@@ -4,8 +4,8 @@ from routes.UserResource import UserResource
 from routes.LoginResource import LoginResource
 from services.config import ma, secret_key
 from flask import Flask
-from flask_restful import Api
 from services.database import db
+from services.exception_handlers import api
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 
@@ -19,7 +19,7 @@ with app.app_context():
 
 # config routes
 ma.init_app(app)
-api = Api(app)
+api.init_app(app)
 
 # jwt-token
 bcrypt = Bcrypt(app)
