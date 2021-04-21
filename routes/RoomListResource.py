@@ -2,13 +2,16 @@ from flask import request
 from models.Room import Room, db
 from flask_restful import Resource
 from schemas.RoomSchema import rooms_schema, room_schema
+from flask_jwt_extended import jwt_required
 
 
 class RoomListResource(Resource):
+    @jwt_required()
     def get(self):
         rooms = Room.query.all()
         return rooms_schema.dump(rooms)
 
+    @jwt_required()
     def post(self):
         new_room = Room(
             name=request.json['name']
