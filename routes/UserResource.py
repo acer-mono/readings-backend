@@ -2,10 +2,11 @@ from flask_restx import Resource
 from models.User import User
 from flask import request
 from services.database import db
-from schemas.UserSchema import user_schema
+from flask_jwt_extended import jwt_required
 
 
 class UserResource(Resource):
+    @jwt_required()
     def post(self):
         login = request.json['login']
         password = request.json['password']
