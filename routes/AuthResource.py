@@ -5,7 +5,7 @@ from flask_restx import Resource
 import datetime
 
 
-class LoginResource(Resource):
+class AuthResource(Resource):
     def post(self):
         user = User.query.filter_by(login=request.json['login']).first()
         authorized = user.check_password(request.json['password'])

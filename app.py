@@ -5,7 +5,7 @@ from services.exception_handlers import api
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 from routes.RoomResource import RoomResource
-from routes.LoginResource import LoginResource
+from routes.AuthResource import AuthResource
 from routes.ReadingListResource import ReadingListResource
 from routes.UserResource import UserResource
 from routes.ReadingResource import ReadingResource
@@ -23,11 +23,11 @@ with app.app_context():
 ma.init_app(app)
 api.init_app(app)
 
-api.add_resource(LoginResource, '/login')
+api.add_resource(AuthResource, '/auth')
 api.add_resource(ReadingResource, '/reading')
 api.add_resource(ReadingListResource, '/readings')
 api.add_resource(RoomListResource, '/rooms')
-api.add_resource(RoomResource, '/room/<int:room_id>')
+api.add_resource(RoomResource, '/room')
 api.add_resource(UserResource, '/user')
 
 # jwt-token
