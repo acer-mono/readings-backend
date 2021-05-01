@@ -8,10 +8,9 @@ import datetime
 class LoginResource(Resource):
     def post(self):
         user = User.query.filter_by(login=request.json['login']).first()
-        print(user)
         authorized = user.check_password(request.json['password'])
         if not authorized:
-            return {'error': 'Login or password invalid'}, 401
+            return {'message': 'Login or password invalid'}, 401
 
         expires = datetime.timedelta(days=7)
         access_token = create_access_token(identity=str(user.id), expires_delta=expires)

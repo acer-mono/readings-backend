@@ -9,6 +9,7 @@ class User(db.Model):
     login = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.String(100), nullable=False)
     isAdmin = db.Column(db.Boolean, default=False)
+    readings = db.relationship('Reading', backref='owner_users')
 
     def check_password(self, password):
         return check_password_hash(self.password, password)
@@ -17,4 +18,4 @@ class User(db.Model):
         self.password = generate_password_hash(self.password).decode('utf8')
 
     def __repr__(self):
-        return '<Room %s>' % self.login
+        return '<User: {}>'.format(self.id)

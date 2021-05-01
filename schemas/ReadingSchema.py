@@ -4,7 +4,7 @@ from models.Reading import Reading
 
 class ReadingSchema(ma.Schema):
     class Meta:
-        fields = ("id", "temperature", "humidity", "room", "user", "datetime")
+        fields = ("id", "temperature", "humidity", "room_id", "user_id", "date")
         model = Reading
 
 
