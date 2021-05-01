@@ -8,6 +8,7 @@ from routes.RoomResource import RoomResource
 from routes.AuthResource import AuthResource
 from routes.ReadingListResource import ReadingListResource
 from routes.UserResource import UserResource
+from routes.UserListResource import UserListResource
 from routes.ReadingResource import ReadingResource
 from routes.RoomListResource import RoomListResource
 
@@ -26,9 +27,10 @@ api.init_app(app)
 api.add_resource(AuthResource, '/auth')
 api.add_resource(ReadingResource, '/reading')
 api.add_resource(ReadingListResource, '/readings')
-api.add_resource(RoomListResource, '/rooms')
 api.add_resource(RoomResource, '/room')
+api.add_resource(RoomListResource, '/rooms')
 api.add_resource(UserResource, '/user')
+api.add_resource(UserListResource, '/users')
 
 # jwt-token
 bcrypt = Bcrypt(app)
