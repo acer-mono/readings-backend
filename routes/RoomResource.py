@@ -9,7 +9,7 @@ from services.database import db
 class RoomResource(Resource):
     @jwt_required()
     def get(self):
-        room_id = request.json['id']
+        room_id = request.args.get('id')
         room = Room.query.get_or_404(room_id)
         return room_schema.dump(room)
 
