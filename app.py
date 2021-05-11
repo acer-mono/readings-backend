@@ -11,6 +11,8 @@ from routes.UserResource import UserResource
 from routes.UserListResource import UserListResource
 from routes.ReadingResource import ReadingResource
 from routes.RoomListResource import RoomListResource
+from routes.TableResource import TableResource
+from routes.PlotResource import PlotResource
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -35,6 +37,8 @@ api.add_resource(RoomResource, '/room')
 api.add_resource(RoomListResource, '/rooms')
 api.add_resource(UserResource, '/user')
 api.add_resource(UserListResource, '/users')
+api.add_resource(TableResource, '/table')
+api.add_resource(PlotResource, '/plot')
 
 # jwt-token
 bcrypt = Bcrypt(app)
