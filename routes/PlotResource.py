@@ -3,6 +3,7 @@ from models.Reading import Reading
 from flask_jwt_extended import jwt_required
 import matplotlib.pyplot as plt
 from flask import send_from_directory
+from schemas.ReadingSchema import readings_schema
 
 def getTemperature(arr):
     dates = []
@@ -19,8 +20,8 @@ class PlotResource(Resource):
     def get(self):
         fig, ax = plt.subplots(nrows=1, ncols=1)
         readings = Reading.query.all()
-        dates, temps, humids = getTemperature(readings)
-        ax.plot(dates, temps)
+        dates, temps, humids = getTemperature(readings_schema.dump(readings))
+        ax.plot(dates, humids)
         fig.savefig('./plot.png')
         plt.close(fig)
         return send_from_directory('./', 'to.png', as_attachment=True)
