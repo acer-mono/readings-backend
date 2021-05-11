@@ -11,6 +11,7 @@ from routes.UserResource import UserResource
 from routes.UserListResource import UserListResource
 from routes.ReadingResource import ReadingResource
 from routes.RoomListResource import RoomListResource
+from flask_cors import CORS
 
 app = Flask(__name__)
 
@@ -23,6 +24,9 @@ with app.app_context():
 # config routes
 ma.init_app(app)
 api.init_app(app)
+
+#cors
+CORS(app)
 
 api.add_resource(AuthResource, '/auth')
 api.add_resource(ReadingResource, '/reading')

@@ -13,7 +13,7 @@ class Reading(db.Model):
     humidity = db.Column(db.DECIMAL(asdecimal=False), nullable=False)
     room_id = db.Column(db.Integer, db.ForeignKey('room.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    date = db.Column(db.DATE, default=datetime.date.today(), unique=True)
+    date = db.Column(db.DATE, default=datetime.date.today())
 
     def __repr__(self):
         return '<Reading: {}>'.format(self.id)

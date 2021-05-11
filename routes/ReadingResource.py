@@ -3,7 +3,7 @@ from models.Reading import Reading
 from flask import request
 from services.database import db
 from flask_jwt_extended import jwt_required
-from sqlalchemy import or_
+from sqlalchemy import and_
 from models.Room import Room
 from models.User import User
 from flask_jwt_extended import get_jwt_identity
@@ -37,7 +37,7 @@ class ReadingResource(Resource):
         room_id = request.args.get('room')
 
         conds = [Reading.room_id == room_id, Reading.date == date.today()]
-        reading_query = Reading.query.filter(or_(*conds))
+        reading_query = Reading.query.filter(and_(*conds))
         reading = reading_query.first()
 
         if not reading:
@@ -52,7 +52,7 @@ class ReadingResource(Resource):
         room_id = request.json['room']
 
         conds = [Reading.room_id == room_id, Reading.date == date.today()]
-        reading_query = Reading.query.filter(or_(*conds))
+        reading_query = Reading.query.filter(and_(*conds))
         reading = reading_query.first()
 
         if not reading:
