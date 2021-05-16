@@ -15,7 +15,6 @@ class UserResource(Resource):
 
         return user_schema.dump(user)
 
-    @jwt_required()
     def post(self):
         login = request.json['login']
         password = request.json['password']
