@@ -1,10 +1,9 @@
 from models.Reading import Reading
 from flask_restx import Resource
 from schemas.ReadingSchema import readings_schema
-from flask_jwt_extended import jwt_required
+import flask_praetorian
 from fpdf import FPDF
 from flask import Response
-import datetime
 from flask import request
 import xlsxwriter
 import io
@@ -125,7 +124,7 @@ TABLE_CREATOR = {
 
 
 class TableResource(Resource):
-    @jwt_required()
+    @flask_praetorian.auth_required
     def get(self):
         try:
             start_date = request.args.get('from')

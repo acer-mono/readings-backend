@@ -1,19 +1,23 @@
 from flask import request
-from flask_jwt_extended import create_access_token
-from models.User import User
+from services.config import guard
 from flask_restx import Resource
-import datetime
+from flask_cors import cross_origin
 
 
-class AuthResource(Resource):
+class LoginResource(Resource):
+    @cross_origin()
     def post(self):
-        user = User.query.filter_by(login=request.json['login']).first()
-        authorized = user.check_password(request.json['password'])
+        login = request.json['login']
+        password = request.json['password']
+        user = guard.authenticate(login, password)
+        ret = {'access_token': guard.encode_jwt_token(user)}
+        return ret, 200
 
-        if not authorized:
-            return {'message': 'Login or password invalid'}, 401
 
-        expires = datetime.timedelta(days=7)
-        access_token = create_access_token(identity=str(user.id), expires_delta=expires)
-
-        return {'token': access_token}, 200
+class RefreshResource(Resource):
+    @cross_origin()
+    def post(self):
+        old_token = request.json['access_token']
+        new_token = guard.refresh_jwt_token(old_token)
+        ret = {'access_token': new_token}
+        return ret, 200

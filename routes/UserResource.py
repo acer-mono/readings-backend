@@ -1,4 +1,4 @@
-from flask_jwt_extended import jwt_required
+import flask_praetorian
 from flask_restx import Resource
 from models.User import User
 from flask import request
@@ -7,7 +7,7 @@ from schemas.UserSchema import user_schema
 
 
 class UserResource(Resource):
-    @jwt_required()
+    @flask_praetorian.auth_required
     def get(self):
         user_id = request.args.get('id')
 
@@ -27,7 +27,7 @@ class UserResource(Resource):
         db.session.commit()
         return user_schema.dump(user)
 
-    @jwt_required()
+    @flask_praetorian.auth_required
     def put(self):
         user_id = request.json['id']
         login = request.json['login']
@@ -44,7 +44,7 @@ class UserResource(Resource):
         db.session.commit()
         return user_schema.dump(user)
 
-    @jwt_required()
+    @flask_praetorian.auth_required
     def delete(self):
         user_id = request.json['id']
 

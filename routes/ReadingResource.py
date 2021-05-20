@@ -2,7 +2,7 @@ from flask_restx import Resource
 from models.Reading import Reading
 from flask import request
 from services.database import db
-from flask_jwt_extended import jwt_required
+import flask_praetorian
 from sqlalchemy import and_
 from models.Room import Room
 from models.User import User
@@ -12,7 +12,7 @@ from schemas.ReadingSchema import reading_schema
 
 
 class ReadingResource(Resource):
-    @jwt_required()
+    @flask_praetorian.auth_required
     def post(self):
         temperature = request.json['temperature']
         humidity = request.json['humidity']
@@ -32,7 +32,7 @@ class ReadingResource(Resource):
         db.session.commit()
         return reading_schema.dump(reading), 200
 
-    @jwt_required()
+    @flask_praetorian.auth_required
     def get(self):
         room_id = request.args.get('room')
 
@@ -45,7 +45,7 @@ class ReadingResource(Resource):
         else:
             return reading_schema.dump(reading), 200
 
-    @jwt_required()
+    @flask_praetorian.auth_required
     def put(self):
         temperature = request.json['temperature']
         humidity = request.json['humidity']

@@ -1,7 +1,7 @@
 from flask_restx import Resource
 from models.Reading import Reading
 from models.Room import Room
-from flask_jwt_extended import jwt_required
+import flask_praetorian
 import matplotlib.pyplot as plt
 from flask import send_file
 from schemas.ReadingSchema import readings_schema
@@ -94,7 +94,7 @@ def create_temperature_plot(dates, temps, start_date, end_date, room):
 
 
 class PlotResource(Resource):
-    @jwt_required()
+    @flask_praetorian.auth_required
     def get(self):
         try:
             start_date = request.args.get('from')
