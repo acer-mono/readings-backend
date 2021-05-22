@@ -10,6 +10,7 @@ class User(db.Model):
     password = db.Column(db.String(100), nullable=False)
     isAdmin = db.Column(db.Boolean, default=False)
     roles = db.Column(db.Text)
+    is_active = db.Column(db.Boolean, default=True, server_default='true')
     readings = db.relationship('Reading', backref='owner_users')
 
     @classmethod
@@ -32,7 +33,7 @@ class User(db.Model):
             return []
 
     def is_valid(self):
-        return self.isAdmin
+        return self.is_active
 
     def __repr__(self):
         return '<User: {}>'.format(self.id)

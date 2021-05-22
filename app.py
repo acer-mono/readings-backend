@@ -28,8 +28,7 @@ with app.app_context():
 ma.init_app(app)
 api.init_app(app)
 
-#cors
-app.config['CORS_HEADERS'] = 'Content-Type'
+# cors
 CORS(app)
 
 # jwt-token
@@ -49,7 +48,6 @@ api.add_resource(UserResource, '/user')
 api.add_resource(UserListResource, '/users')
 api.add_resource(TableResource, '/table')
 api.add_resource(PlotResource, '/plot')
-
 
 if __name__ == '__main__':
     app.run()

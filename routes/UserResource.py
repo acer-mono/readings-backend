@@ -15,12 +15,17 @@ class UserResource(Resource):
 
         return user_schema.dump(user)
 
+    @flask_praetorian.auth_required
     def post(self):
         login = request.json['login']
         password = request.json['password']
         is_admin = request.json['is_admin']
+        if not is_admin:
+            role = 'user'
+        else:
+            role = 'admin'
 
-        user = User(login=login, password=password, isAdmin=bool(is_admin))
+        user = User(login=login, password=password, isAdmin=bool(is_admin), roles=role)
         user.hash_password()
 
         db.session.add(user)

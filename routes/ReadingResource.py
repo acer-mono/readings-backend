@@ -5,8 +5,6 @@ from services.database import db
 import flask_praetorian
 from sqlalchemy import and_
 from models.Room import Room
-from models.User import User
-from flask_jwt_extended import get_jwt_identity
 from datetime import date
 from schemas.ReadingSchema import reading_schema
 
@@ -17,10 +15,7 @@ class ReadingResource(Resource):
         temperature = request.json['temperature']
         humidity = request.json['humidity']
 
-        user_id = get_jwt_identity()
-        user = db.session.query(User).get(user_id)
-        if not user:
-            return {'message': 'User not found'}, 404
+        user = flask_praetorian.current_user()
 
         room_id = request.json['room']
         room = db.session.query(Room).get(room_id)

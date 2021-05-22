@@ -9,4 +9,3 @@ class RoomListResource(Resource):
     def get(self):
         rooms = Room.query.all()
         return rooms_schema.dump(rooms)
-
