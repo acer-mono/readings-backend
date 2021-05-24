@@ -16,6 +16,8 @@ class ReadingResource(Resource):
         humidity = request.json['humidity']
 
         user = flask_praetorian.current_user()
+        if not user:
+            return {'message': 'Current user is not found'}, 400
 
         room_id = request.json['room']
         room = db.session.query(Room).get(room_id)
