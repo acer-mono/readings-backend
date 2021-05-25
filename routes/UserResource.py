@@ -17,6 +17,10 @@ class UserResource(Resource):
 
     @flask_praetorian.auth_required
     def post(self):
+        user = flask_praetorian.current_user()
+        if not user.isAdmin:
+            return {"message": "Недостаточно прав"}, 403
+
         login = request.json['login']
         password = request.json['password']
         is_admin = request.json['is_admin']
@@ -34,6 +38,10 @@ class UserResource(Resource):
 
     @flask_praetorian.auth_required
     def put(self):
+        user = flask_praetorian.current_user()
+        if not user.isAdmin:
+            return {"message": "Недостаточно прав"}, 403
+
         user_id = request.json['id']
         login = request.json['login']
         password = request.json['password']
@@ -51,6 +59,10 @@ class UserResource(Resource):
 
     @flask_praetorian.auth_required
     def delete(self):
+        user = flask_praetorian.current_user()
+        if not user.isAdmin:
+            return {"message": "Недостаточно прав"}, 403
+
         user_id = request.json['id']
 
         user = User.query.get_or_404(user_id)

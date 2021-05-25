@@ -18,6 +18,10 @@ class RoomResource(Resource):
     @flask_praetorian.auth_required
     @cross_origin()
     def post(self):
+        user = flask_praetorian.current_user()
+        if not user.isAdmin:
+            return {"message": "Недостаточно прав"}, 403
+
         new_room = Room(
             name=request.json['name']
         )
@@ -29,6 +33,10 @@ class RoomResource(Resource):
     @flask_praetorian.auth_required
     @cross_origin()
     def put(self):
+        user = flask_praetorian.current_user()
+        if not user.isAdmin:
+            return {"message": "Недостаточно прав"}, 403
+
         room_id = request.json['id']
         name = request.json['name']
 
@@ -42,6 +50,10 @@ class RoomResource(Resource):
     @flask_praetorian.auth_required
     @cross_origin()
     def delete(self):
+        user = flask_praetorian.current_user()
+        if not user.isAdmin:
+            return {"message": "Недостаточно прав"}, 403
+
         room_id = request.json['id']
 
         room = Room.query.get_or_404(room_id)
