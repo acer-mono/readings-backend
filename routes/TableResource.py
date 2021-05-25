@@ -25,10 +25,6 @@ def create_pdf(readings):
     pdf.add_font('DejaVu', 'B', 'DejaVuSansCondensed-Bold.ttf', uni=True)
     page_width = pdf.w - 2 * pdf.l_margin
 
-    pdf.set_font('DejaVu', 'B', 14.0)
-    pdf.cell(page_width, 0.0, '21.12.1992 - 30.12.1992', align='C')
-    pdf.ln(10)
-
     pdf.set_font('DejaVu', 'B', 12)
 
     col_width = page_width / 3
