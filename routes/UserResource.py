@@ -9,10 +9,7 @@ from schemas.UserSchema import user_schema
 class UserResource(Resource):
     @flask_praetorian.auth_required
     def get(self):
-        user_id = request.args.get('id')
-
-        user = User.query.get_or_404(user_id)
-
+        user = flask_praetorian.current_user()
         return user_schema.dump(user)
 
     @flask_praetorian.auth_required
