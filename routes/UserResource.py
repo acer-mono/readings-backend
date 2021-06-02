@@ -4,6 +4,7 @@ from models.User import User
 from flask import request
 from services.database import db
 from schemas.UserSchema import user_schema
+from services.decorators import is_user_admin
 
 
 class UserResource(Resource):
@@ -13,11 +14,8 @@ class UserResource(Resource):
         return user_schema.dump(user)
 
     @flask_praetorian.auth_required
+    @is_user_admin
     def post(self):
-        user = flask_praetorian.current_user()
-        if not user.isAdmin:
-            return {"message": "Недостаточно прав"}, 403
-
         login = request.json['login']
         password = request.json['password']
         is_admin = request.json['is_admin']
@@ -34,11 +32,8 @@ class UserResource(Resource):
         return user_schema.dump(user)
 
     @flask_praetorian.auth_required
+    @is_user_admin
     def put(self):
-        user = flask_praetorian.current_user()
-        if not user.isAdmin:
-            return {"message": "Недостаточно прав"}, 403
-
         user_id = request.json['id']
         login = request.json['login']
         password = request.json['password']
@@ -55,14 +50,14 @@ class UserResource(Resource):
         return user_schema.dump(user)
 
     @flask_praetorian.auth_required
+    @is_user_admin
     def delete(self):
-        user = flask_praetorian.current_user()
-        if not user.isAdmin:
-            return {"message": "Недостаточно прав"}, 403
-
         user_id = request.json['id']
 
         user = User.query.get_or_404(user_id)
+
+        if user and len(user.readings) > 0:
+            return {"message": "Невозможно удалить пользователя"}, 400
 
         db.session.delete(user)
         db.session.commit()

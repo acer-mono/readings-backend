@@ -4,24 +4,19 @@ from flask_restx import Resource
 from schemas.RoomSchema import room_schema
 import flask_praetorian
 from services.database import db
-from flask_cors import cross_origin
+from services.decorators import is_user_admin
 
 
 class RoomResource(Resource):
     @flask_praetorian.auth_required
-    @cross_origin()
     def get(self):
         room_id = request.args.get('id')
         room = Room.query.get_or_404(room_id)
         return room_schema.dump(room)
 
     @flask_praetorian.auth_required
-    @cross_origin()
+    @is_user_admin
     def post(self):
-        user = flask_praetorian.current_user()
-        if not user.isAdmin:
-            return {"message": "Недостаточно прав"}, 403
-
         new_room = Room(
             name=request.json['name']
         )
@@ -31,12 +26,8 @@ class RoomResource(Resource):
         return room_schema.dump(new_room)
 
     @flask_praetorian.auth_required
-    @cross_origin()
+    @is_user_admin
     def put(self):
-        user = flask_praetorian.current_user()
-        if not user.isAdmin:
-            return {"message": "Недостаточно прав"}, 403
-
         room_id = request.json['id']
         name = request.json['name']
 
@@ -48,15 +39,14 @@ class RoomResource(Resource):
         return room_schema.dump(room)
 
     @flask_praetorian.auth_required
-    @cross_origin()
+    @is_user_admin
     def delete(self):
-        user = flask_praetorian.current_user()
-        if not user.isAdmin:
-            return {"message": "Недостаточно прав"}, 403
-
         room_id = request.json['id']
 
         room = Room.query.get_or_404(room_id)
+
+        if room and len(room.readings) > 0:
+            return {"message": "Невозможно удалить помещение"}, 400
 
         db.session.delete(room)
         db.session.commit()
