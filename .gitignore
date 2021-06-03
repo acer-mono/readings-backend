@@ -142,3 +142,6 @@ cython_debug/
 
 # db
 *.sqlite
+
+lib64
+/bin

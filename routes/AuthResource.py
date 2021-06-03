@@ -1,10 +1,18 @@
 from flask import request
 from services.config import guard
 from flask_restx import Resource
+from models.User import User
+from services.database import db
 
 
 class LoginResource(Resource):
     def post(self):
+        if len(db.session.query(User).all()) == 0:
+            admin = User(login="admin", password="12345678", isAdmin=True, roles='admin')
+            admin.hash_password()
+            db.session.add(admin)
+            db.session.commit()
+
         login = request.json['login']
         password = request.json['password']
         user = guard.authenticate(login, password)
