@@ -9,6 +9,7 @@ import xlsxwriter
 import io
 import csv
 import mimetypes
+import os
 from services.utils import create_date
 from werkzeug.datastructures import Headers
 
@@ -21,8 +22,8 @@ def create_pdf(readings):
     pdf = FPDF()
     pdf.add_page()
 
-    pdf.add_font('DejaVu', '', 'DejaVuSansCondensed.ttf', uni=True)
-    pdf.add_font('DejaVu', 'B', 'DejaVuSansCondensed-Bold.ttf', uni=True)
+    pdf.add_font('DejaVu', '', os.getcwd() + '/DejaVuSansCondensed.ttf', uni=True)
+    pdf.add_font('DejaVu', 'B', os.getcwd() + '/DejaVuSansCondensed-Bold.ttf', uni=True)
     page_width = pdf.w - 2 * pdf.l_margin
 
     pdf.set_font('DejaVu', 'B', 12)
