@@ -17,7 +17,6 @@ DATE_HEADER = "Дата"
 TEMPERATURE_HEADER = "Температура"
 HUMIDITY_HEADER = "Влажность"
 
-
 def create_pdf(readings):
     pdf = FPDF()
     pdf.add_page()
@@ -47,7 +46,7 @@ def create_pdf(readings):
     pdf.ln(10)
 
     return Response(pdf.output(dest='S').encode('latin-1'), mimetype='application/pdf',
-                    headers={'Content-Disposition': 'attachment;filename=employee_report.pdf'})
+                    headers={'Content-Disposition': 'attachment;filename=table.pdf'})
 
 
 def create_xlsx(readings):
@@ -70,6 +69,7 @@ def create_xlsx(readings):
         worksheet.write(row, col, create_date(reading['date']))
         worksheet.write(row, col + 1, reading['temperature'])
         worksheet.write(row, col + 2, reading['humidity'])
+        row += 1
 
     workbook.close()
 
@@ -81,10 +81,6 @@ def create_xlsx(readings):
     mimetype_tuple = mimetypes.guess_type(file_name)
 
     response_headers = Headers({
-        'Pragma': "public",
-        'Expires': '0',
-        'Cache-Control': 'must-revalidate, post-check=0, pre-check=0',
-        'Cache-Control': 'private',
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'Content-Disposition': 'attachment; filename=\"%s\";' % file_name,
         'Content-Transfer-Encoding': 'binary',
@@ -131,6 +127,7 @@ class TableResource(Resource):
             readings = readings_schema.dump(
                 Reading.query.filter(Reading.date.between(start_date, end_date),
                                      Reading.room_id == room_id))
+
             f = request.args.get('format')
 
             return TABLE_CREATOR[f](readings)

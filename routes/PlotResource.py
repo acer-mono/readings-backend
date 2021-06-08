@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 from flask import send_file
 from schemas.ReadingSchema import readings_schema
 from flask import request
-import numpy as np
 import os
 from services.utils import create_date
 
