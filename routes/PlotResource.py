@@ -8,7 +8,6 @@ from schemas.ReadingSchema import readings_schema
 from flask import request
 import os
 from services.utils import create_date
-plt.xticks(rotation=90)
 
 def get_data(arr):
     dates = []
