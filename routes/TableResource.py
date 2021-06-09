@@ -1,15 +1,15 @@
 from models.Reading import Reading
 from flask_restx import Resource
 from schemas.ReadingSchema import readings_schema
-from flask_jwt_extended import jwt_required
+import flask_praetorian
 from fpdf import FPDF
 from flask import Response
-import datetime
 from flask import request
 import xlsxwriter
 import io
 import csv
 import mimetypes
+import os
 from services.utils import create_date
 from werkzeug.datastructures import Headers
 
@@ -17,18 +17,13 @@ DATE_HEADER = "Дата"
 TEMPERATURE_HEADER = "Температура"
 HUMIDITY_HEADER = "Влажность"
 
-
 def create_pdf(readings):
     pdf = FPDF()
     pdf.add_page()
 
-    pdf.add_font('DejaVu', '', 'DejaVuSansCondensed.ttf', uni=True)
-    pdf.add_font('DejaVu', 'B', 'DejaVuSansCondensed-Bold.ttf', uni=True)
+    pdf.add_font('DejaVu', '', os.getcwd() + '/DejaVuSansCondensed.ttf', uni=True)
+    pdf.add_font('DejaVu', 'B', os.getcwd() + '/DejaVuSansCondensed-Bold.ttf', uni=True)
     page_width = pdf.w - 2 * pdf.l_margin
-
-    pdf.set_font('DejaVu', 'B', 14.0)
-    pdf.cell(page_width, 0.0, '21.12.1992 - 30.12.1992', align='C')
-    pdf.ln(10)
 
     pdf.set_font('DejaVu', 'B', 12)
 
@@ -51,7 +46,7 @@ def create_pdf(readings):
     pdf.ln(10)
 
     return Response(pdf.output(dest='S').encode('latin-1'), mimetype='application/pdf',
-                    headers={'Content-Disposition': 'attachment;filename=employee_report.pdf'})
+                    headers={'Content-Disposition': 'attachment;filename=table.pdf'})
 
 
 def create_xlsx(readings):
@@ -74,6 +69,7 @@ def create_xlsx(readings):
         worksheet.write(row, col, create_date(reading['date']))
         worksheet.write(row, col + 1, reading['temperature'])
         worksheet.write(row, col + 2, reading['humidity'])
+        row += 1
 
     workbook.close()
 
@@ -85,10 +81,6 @@ def create_xlsx(readings):
     mimetype_tuple = mimetypes.guess_type(file_name)
 
     response_headers = Headers({
-        'Pragma': "public",
-        'Expires': '0',
-        'Cache-Control': 'must-revalidate, post-check=0, pre-check=0',
-        'Cache-Control': 'private',
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'Content-Disposition': 'attachment; filename=\"%s\";' % file_name,
         'Content-Transfer-Encoding': 'binary',
@@ -125,7 +117,7 @@ TABLE_CREATOR = {
 
 
 class TableResource(Resource):
-    @jwt_required()
+    @flask_praetorian.auth_required
     def get(self):
         try:
             start_date = request.args.get('from')
@@ -135,6 +127,7 @@ class TableResource(Resource):
             readings = readings_schema.dump(
                 Reading.query.filter(Reading.date.between(start_date, end_date),
                                      Reading.room_id == room_id))
+
             f = request.args.get('format')
 
             return TABLE_CREATOR[f](readings)

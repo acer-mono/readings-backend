@@ -1,44 +1,21 @@
-from flask_jwt_extended import exceptions
 from flask_restx import Api
+import sqlalchemy
+import flask_buzz
 
 api = Api()
+flask_buzz.FlaskBuzz.register_error_handler_with_flask_restplus(api)
 
 
-@api.errorhandler(exceptions.NoAuthorizationError)
-def handle_auth_error(e):
-    return {'message': str(e)}, 401
+@api.errorhandler(sqlalchemy.exc.OperationalError)
+def handle_operational_error(e):
+    return {'message': 'Невозможно совершить операцию. Обратитесь к администратору.'}, 500
 
 
-@api.errorhandler(exceptions.CSRFError)
-def handle_auth_error(e):
-    return {'message': str(e)}, 401
+@api.errorhandler(sqlalchemy.exc.IntegrityError)
+def handle_integrity_error(e):
+    return {'message': 'Невозможно совершить операцию. Проверьте данные.'}, 400
 
 
-@api.errorhandler(exceptions.InvalidHeaderError)
-def handle_invalid_header_error(e):
-    return {'message': str(e)}, 422
-
-
-@api.errorhandler(exceptions.JWTDecodeError)
-def handle_jwt_decode_error(e):
-    return {'message': str(e)}, 422
-
-
-@api.errorhandler(exceptions.WrongTokenError)
-def handle_wrong_token_error(e):
-    return {'message': str(e)}, 422
-
-
-@api.errorhandler(exceptions.RevokedTokenError)
-def handle_revoked_token_error(e):
-    return {'message': 'Token has been revoked'}, 401
-
-
-@api.errorhandler(exceptions.FreshTokenRequired)
-def handle_fresh_token_required(e):
-    return {'message': 'Fresh token required'}, 401
-
-
-@api.errorhandler(exceptions.UserClaimsVerificationError)
-def handle_failed_user_claims_verification(e):
-    return {'message': 'User claims verification failed'}, 400
+@api.errorhandler(Exception)
+def catch_all_handler(e):
+    return {'message': 'Уупс... Что-то пошло не так:('}, 500

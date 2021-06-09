@@ -1,14 +1,14 @@
 from flask_restx import Resource
 from models.Reading import Reading
 from models.Room import Room
-from flask_jwt_extended import jwt_required
+import flask_praetorian
 import matplotlib.pyplot as plt
 from flask import send_file
 from schemas.ReadingSchema import readings_schema
 from flask import request
-import numpy as np
+import os
 from services.utils import create_date
-
+plt.xticks(rotation=90)
 
 def get_data(arr):
     dates = []
@@ -22,7 +22,8 @@ def get_data(arr):
 
 
 def create_humidity_temperature_plot(dates, humids, temps, start_date, end_date, room):
-    fig, ax1 = plt.subplots(nrows=1, ncols=1)
+    fig, ax1 = plt.subplots(nrows=1, ncols=1, figsize=(20, 10))
+    fig.autofmt_xdate(rotation=45)
     ax1.set_title(
         'Температурно-влажностный режим в помещении "{}"\nза период с {} по {}'.format(room, start_date, end_date))
     color = 'tab:red'
@@ -39,21 +40,14 @@ def create_humidity_temperature_plot(dates, humids, temps, start_date, end_date,
     ax2.tick_params(axis='y', labelcolor=color)
 
     fig.tight_layout()
-    fig.savefig('./plot.png')
+    fig.savefig(os.getcwd() + '/plot.png')
     plt.close(fig)
 
 
 def create_humidity_plot(dates, humids, start_date, end_date, room):
-    fig, ax = plt.subplots(nrows=1, ncols=1)
-    major_ticks = np.arange(0, 101, 1)
-    minor_ticks = np.arange(0, 101, 0.2)
-    ax.set_yticks(major_ticks)
-    ax.set_yticks(minor_ticks, minor=True)
-
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(20, 10))
+    fig.autofmt_xdate(rotation=45)
     ax.grid(which='both')
-
-    ax.grid(which='minor', alpha=0.2)
-    ax.grid(which='major', alpha=0.5)
     ax.set_title(
         'Влажностный режим в помещении "{}"\nза период с {} по {}'.format(room, start_date, end_date))
     ax.set_xlabel('Дата')
@@ -64,21 +58,14 @@ def create_humidity_plot(dates, humids, start_date, end_date, room):
     ax.tick_params(axis='y', labelcolor=color)
 
     fig.tight_layout()
-    fig.savefig('./plot.png')
+    fig.savefig(os.getcwd() + '/plot.png')
     plt.close(fig)
 
 
 def create_temperature_plot(dates, temps, start_date, end_date, room):
-    fig, ax = plt.subplots(nrows=1, ncols=1)
-    major_ticks = np.arange(0, 101, 1)
-    minor_ticks = np.arange(0, 101, 0.2)
-    ax.set_yticks(major_ticks)
-    ax.set_yticks(minor_ticks, minor=True)
-
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(20, 10))
+    fig.autofmt_xdate(rotation=45)
     ax.grid(which='both')
-
-    ax.grid(which='minor', alpha=0.2)
-    ax.grid(which='major', alpha=0.5)
     ax.set_title(
         'Температурный режим в помещении "{}"\nза период с {} по {}'.format(room, start_date, end_date))
     ax.set_xlabel('Дата')
@@ -89,12 +76,12 @@ def create_temperature_plot(dates, temps, start_date, end_date, room):
     ax.tick_params(axis='y', labelcolor=color)
 
     fig.tight_layout()
-    fig.savefig('./plot.png')
+    fig.savefig(os.getcwd() + '/plot.png')
     plt.close(fig)
 
 
 class PlotResource(Resource):
-    @jwt_required()
+    @flask_praetorian.auth_required
     def get(self):
         try:
             start_date = request.args.get('from')
@@ -117,7 +104,7 @@ class PlotResource(Resource):
             else:
                 return {'message': 'Type of the plot is not found'}, 400
 
-            return send_file('./plot.png',
+            return send_file(os.getcwd() + '/plot.png',
                              attachment_filename='plot.png', as_attachment=True)
         except Exception as e:
             return {"message": str(e)}, 500

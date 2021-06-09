@@ -2,25 +2,22 @@ from flask_restx import Resource
 from models.Reading import Reading
 from flask import request
 from services.database import db
-from flask_jwt_extended import jwt_required
+import flask_praetorian
 from sqlalchemy import and_
 from models.Room import Room
-from models.User import User
-from flask_jwt_extended import get_jwt_identity
 from datetime import date
 from schemas.ReadingSchema import reading_schema
 
 
 class ReadingResource(Resource):
-    @jwt_required()
+    @flask_praetorian.auth_required
     def post(self):
         temperature = request.json['temperature']
         humidity = request.json['humidity']
 
-        user_id = get_jwt_identity()
-        user = db.session.query(User).get(user_id)
+        user = flask_praetorian.current_user()
         if not user:
-            return {'message': 'User not found'}, 404
+            return {'message': 'Current user is not found'}, 400
 
         room_id = request.json['room']
         room = db.session.query(Room).get(room_id)
@@ -32,7 +29,7 @@ class ReadingResource(Resource):
         db.session.commit()
         return reading_schema.dump(reading), 200
 
-    @jwt_required()
+    @flask_praetorian.auth_required
     def get(self):
         room_id = request.args.get('room')
 
@@ -45,7 +42,7 @@ class ReadingResource(Resource):
         else:
             return reading_schema.dump(reading), 200
 
-    @jwt_required()
+    @flask_praetorian.auth_required
     def put(self):
         temperature = request.json['temperature']
         humidity = request.json['humidity']

@@ -2,11 +2,11 @@ from flask import request
 from models.Reading import Reading
 from flask_restx import Resource
 from schemas.ReadingSchema import readings_schema
-from flask_jwt_extended import jwt_required
+import flask_praetorian
 
 
 class ReadingListResource(Resource):
-    @jwt_required()
+    @flask_praetorian.auth_required
     def get(self):
         start_date = request.args.get('from')
         end_date = request.args.get('to')

@@ -1,19 +1,28 @@
 from flask import request
-from flask_jwt_extended import create_access_token
-from models.User import User
+from services.config import guard
 from flask_restx import Resource
-import datetime
+from models.User import User
+from services.database import db
 
 
-class AuthResource(Resource):
+class LoginResource(Resource):
     def post(self):
-        user = User.query.filter_by(login=request.json['login']).first()
-        authorized = user.check_password(request.json['password'])
+        if len(db.session.query(User).all()) == 0:
+            admin = User(login="admin", password="12345678", isAdmin=True, roles='admin')
+            admin.hash_password()
+            db.session.add(admin)
+            db.session.commit()
 
-        if not authorized:
-            return {'message': 'Login or password invalid'}, 401
+        login = request.json['login']
+        password = request.json['password']
+        user = guard.authenticate(login, password)
+        ret = {'access_token': guard.encode_jwt_token(user)}
+        return ret, 200
 
-        expires = datetime.timedelta(days=7)
-        access_token = create_access_token(identity=str(user.id), expires_delta=expires)
 
-        return {'token': access_token}, 200
+class RefreshResource(Resource):
+    def post(self):
+        old_token = request.json['access_token']
+        new_token = guard.refresh_jwt_token(old_token)
+        ret = {'access_token': new_token}
+        return ret, 200
