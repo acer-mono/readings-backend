@@ -8,7 +8,7 @@ from schemas.ReadingSchema import readings_schema
 from flask import request
 import os
 from services.utils import create_date
-
+plt.xticks(rotation=90)
 
 def get_data(arr):
     dates = []
@@ -22,7 +22,8 @@ def get_data(arr):
 
 
 def create_humidity_temperature_plot(dates, humids, temps, start_date, end_date, room):
-    fig, ax1 = plt.subplots(nrows=1, ncols=1)
+    fig, ax1 = plt.subplots(nrows=1, ncols=1, figsize=(20, 10))
+    fig.autofmt_xdate(rotation=45)
     ax1.set_title(
         'Температурно-влажностный режим в помещении "{}"\nза период с {} по {}'.format(room, start_date, end_date))
     color = 'tab:red'
@@ -44,7 +45,9 @@ def create_humidity_temperature_plot(dates, humids, temps, start_date, end_date,
 
 
 def create_humidity_plot(dates, humids, start_date, end_date, room):
-    fig, ax = plt.subplots(nrows=1, ncols=1)
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(20, 10))
+    fig.autofmt_xdate(rotation=45)
+    ax.grid(which='both')
     ax.set_title(
         'Влажностный режим в помещении "{}"\nза период с {} по {}'.format(room, start_date, end_date))
     ax.set_xlabel('Дата')
@@ -60,7 +63,9 @@ def create_humidity_plot(dates, humids, start_date, end_date, room):
 
 
 def create_temperature_plot(dates, temps, start_date, end_date, room):
-    fig, ax = plt.subplots(nrows=1, ncols=1)
+    fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(20, 10))
+    fig.autofmt_xdate(rotation=45)
+    ax.grid(which='both')
     ax.set_title(
         'Температурный режим в помещении "{}"\nза период с {} по {}'.format(room, start_date, end_date))
     ax.set_xlabel('Дата')
